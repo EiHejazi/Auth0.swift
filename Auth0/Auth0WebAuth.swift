@@ -253,7 +253,7 @@ final class Auth0WebAuth: WebAuth {
                            state: String?,
                            organization: String?,
                            invitation: String?) -> URL {
-        let authorize = self.overrideAuthorizeURL ?? URL(string: "authorize", relativeTo: self.url)!
+        let authorize = self.overrideAuthorizeURL ?? self.url
         var components = URLComponents(url: authorize, resolvingAgainstBaseURL: true)!
         var items: [URLQueryItem] = []
         var entries = defaults
