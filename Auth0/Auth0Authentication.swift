@@ -348,7 +348,7 @@ private extension Auth0Authentication {
         let payload: [String: Any] = [
             "client_id": self.clientId
         ]
-        let token = URL(string: "oauth/token", relativeTo: self.url)!
+        let token = URL(string: "/token", relativeTo: self.url)!
         return Request(session: session,
                        url: token,
                        method: "POST",
