@@ -88,7 +88,7 @@ public struct Request<T, E: Auth0APIError>: Requestable {
                 #endif
             }
         }
-        request.setValue("text/plain", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         headers.forEach { name, value in request.setValue(value, forHTTPHeaderField: name) }
         telemetry.addTelemetryHeader(request: request)
         return request as URLRequest
