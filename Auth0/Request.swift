@@ -44,7 +44,7 @@ public struct Request<T, E: Auth0APIError>: Requestable {
         self.telemetry = telemetry
     }
 
-    var request: URLRequest {
+    /*var request: URLRequest {
         let request = NSMutableURLRequest(url: url)
         request.httpMethod = method
         if !parameters.isEmpty {
@@ -63,6 +63,32 @@ public struct Request<T, E: Auth0APIError>: Requestable {
             }
         }
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        headers.forEach { name, value in request.setValue(value, forHTTPHeaderField: name) }
+        telemetry.addTelemetryHeader(request: request)
+        return request as URLRequest
+    }*/
+    
+    var request: URLRequest {
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = method
+        if !parameters.isEmpty {
+            if method.caseInsensitiveCompare("GET") == .orderedSame {
+                var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+                var queryItems = urlComponents?.queryItems ?? []
+                let newQueryItems = parameters.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
+                queryItems.append(contentsOf: newQueryItems)
+                urlComponents?.queryItems = queryItems
+                request.url = urlComponents?.url ?? url
+            } else {
+                // Assuming parameters is a dictionary and you want to format it as a plain text
+                let httpBodyString = parameters.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
+                request.httpBody = httpBodyString.data(using: .utf8)
+                #if DEBUG
+                URLProtocol.setProperty(httpBodyString, forKey: parameterPropertyKey, in: request)
+                #endif
+            }
+        }
+        request.setValue("text/plain", forHTTPHeaderField: "Content-Type")
         headers.forEach { name, value in request.setValue(value, forHTTPHeaderField: name) }
         telemetry.addTelemetryHeader(request: request)
         return request as URLRequest
