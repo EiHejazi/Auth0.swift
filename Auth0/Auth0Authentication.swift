@@ -311,7 +311,7 @@ struct Auth0Authentication: Authentication {
     func jwks() -> Request<JWKS, AuthenticationError> {
         
         let baseURL = self.url.deletingLastPathComponent()
-        let jwks = URL(string: ".well-known/jwks.json", relativeTo: baseURL)!
+        let jwks = URL(string: ".well-known/openid-configuration", relativeTo: baseURL)!
         
         return Request(session: session,
                        url: jwks,
